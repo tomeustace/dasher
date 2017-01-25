@@ -8,7 +8,7 @@
 
       <h2 class="md-title" style="flex: 1">{{name}}</h2>
 
-      <md-button @click="configureComponent" class="md-icon-button">
+      <md-button @click="openDialog(name, 'configureComponentDialog')" class="md-icon-button">
         <md-tooltip>Configure Widget</md-tooltip>
 	<md-icon class="md-accent">settings</md-icon>
       </md-button>
@@ -27,6 +27,24 @@
           <slot name="widget1"></slot>
 	</md-card-content>
     </md-card>
+
+    <md-dialog md-open-from="#custom" md-close-to="#custom" ref="configureComponentDialog">
+      <md-dialog-title v-model="widget">Configure widget {{widget}}</md-dialog-title>
+
+      <md-dialog-content>
+        <md-input-container class="save-configuration">
+          <label>URL</label>
+          <md-input></md-input>
+        </md-input-container>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-raised md-primary" @click="save('configureComponentDialog')">
+          <md-tooltip>Save</md-tooltip>
+          <md-icon>save</md-icon>
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
 
   </div>
 </template>
@@ -52,6 +70,14 @@ const vm = {
     },
     configureComponent: function(name) {
       alert('Configure not implemented.');
+    },
+    save(ref) {
+      this.$refs[ref].close();
+    },
+    openDialog(name, ref) {
+      this.$refs[ref].open();
+    },
+    closeDialog(ref) {
     },
   },
   beforeCreate() { },

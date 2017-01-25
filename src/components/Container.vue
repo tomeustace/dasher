@@ -21,17 +21,13 @@
         </md-dialog-content>
 
         <md-dialog-actions>
-          <!--
-          <md-button class="md-primary" v-model="selectedOptions" @click="closeDialog('addComponentDialog')">Cancel</md-button>
-          <md-button class="md-primary" v-model="selectedOptions" @click="closeDialog('addComponentDialog')">Ok</md-button>
-          -->
           <md-button class="md-primary" @click="closeDialog('addComponentDialog')">Cancel</md-button>
           <md-button class="md-primary" @click="closeDialog('addComponentDialog')">Ok</md-button>
         </md-dialog-actions>
       </md-dialog>
 
-      <md-tabs id="tabs" class="md-primary">
-        <md-tab v-for="(view, index) in views" v-bind:id="view.name" v-on:click="changeView('tom')" class="tab" :index="index" v-bind:md-label="view.name">
+      <md-tabs id="tabs" v-on:change="changeView()" class="md-primary">
+        <md-tab v-for="(view, index) in views" md-active v-bind:id="view.name" class="tab" :index="index" v-bind:md-label="view.name">
 
           <div class="widget-container">
             <component-shell v-for="(widget, index) in view.widgets" :index="index" class="widget" :is="widget.name"></component-shell>
@@ -43,8 +39,12 @@
               <md-icon>add</md-icon>
             </md-button>
             <md-button @click="removeWidgetsFromView(view.name)">
-              <md-tooltip>Delete All Components</md-tooltip>
+              <md-tooltip>Delete All Widgets</md-tooltip>
               <md-icon>delete</md-icon>
+            </md-button>
+            <md-button @click="removeWidgetsFromView(view.name)">
+              <md-tooltip>Delete View</md-tooltip>
+              <md-icon>delete_forever</md-icon>
             </md-button>
           </div>
         </md-tab>
@@ -54,7 +54,9 @@
 </template>
 <script>
 
+/*eslint-disable */
 import { mapState } from 'vuex';
+/*eslint-enable */
 import { getViewNames } from './../util/view.manager';
 import ComponentShell from './ComponentShell';
 import Widget1 from './../widgets/Widget1';
@@ -88,9 +90,13 @@ const vm = {
     loadedViews = JSON.parse(loadedViews);
     this.$store.dispatch('loadViews', loadedViews); ;
   },
+  //computed: mapState([ 'count' ])
   computed: {
     // map this.views to store.state.views
-    ...mapState(['views','views.widgets']),
+    //...mapState(['views']),
+    views () {
+      return this.$store.state.views;
+    },
     //Adds available components to dialog for selection
     getComponents: function() {
       var widgets = [];
@@ -104,7 +110,7 @@ const vm = {
   },
   methods: {
     changeView(activeView) {
-      alert('changing view');
+      console.log(`changeView ${activeView}`);
     },
     addWidget(activeView, name) {
       console.log('Container.addWidget');
