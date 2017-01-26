@@ -6,7 +6,7 @@ import 'vue-material/dist/vue-material.css';
 import Vuex from 'vuex';
 import App from './App';
 
-import { addNewView, addWidgetToView, removeWidgetFromView, removeWidgetsFromView } from './util/view.manager';
+import { addNewView, addWidgetToView, removeWidgetFromView, removeWidgetsFromView, updateWidgetConfig } from './util/view.manager';
 
 Vue.use(Vuex);
 Vue.use(VueMaterial);
@@ -40,15 +40,25 @@ export const store = new Vuex.Store({
     },
     loadViews ({ commit, state }, loadedViews ) {
       if(!_.isNull(loadedViews)) {
+        //load views
         _.each(loadedViews, function(view) {
           commit('addView', view.name);
           console.log(`action: loadViews() - ${view.name} `);
+          //load view widgets
           _.each(view.widgets, function(widget) {
             let index = _.findIndex(state.views, function(v) {
               return v.name === view.name; 
             });
             console.log(`action: loadViews() - widget ${widget.name} cid ${widget.cid}`);
             commit('addWidgetToView', {index: index, widget: {name: widget.name, cid: widget.cid}})
+            //load widget config
+            _.each(widget.config, function(config) {
+              let widgetIndex = _.findIndex(state.views[index].widgets, function(v) {
+                return v.cid === widget.cid; 
+              });
+              console.log(`action: loadViews() - config ${widget.name} cid ${widget.cid} config ${config}`);
+              commit('addConfigToWidget', {index, widget: {name: widget.name, widgetIndex, cid: widget.cid, config}})
+            });
           });
         });
       } 
@@ -85,7 +95,17 @@ export const store = new Vuex.Store({
       });
       commit('removeWidgetsFromView', {index: index, viewName: viewName})
     },
+    updateWidgetConfig ({ commit, state }, config) {
+      let viewName = config.viewName;
+      updateWidgetConfig(config); 
+      //need to find index of view by name
+      let index = _.findIndex(state.views, function(view) {
+        return view.name === viewName; 
+      });
+      commit('updateWidgetConfig', {index, viewName, config})
+    },
   },
+  //TODO CLEAN UP NAMING OF VARIABLES
   mutations: {
     addView(state, viewName) {
       console.log(`mutation: addView() - ${viewName}`);
@@ -104,7 +124,16 @@ export const store = new Vuex.Store({
       console.log(`mutations: addWidgetToView() - ${viewAdd.name} ${view.widget.name}`);
       viewAdd.widgets.push(view.widget);
       state.views.splice(view.index, 1, viewAdd);
-      //state.views[view.index].widgets.push(view.widget);
+    },
+    addConfigToWidget(state, view) {
+      if(_.isUndefined(state.views[view.index].widgets[view.widget.widgetIndex].config)) {
+        state.views[view.index].widgets[view.widget.widgetIndex].config = [];
+      }
+      //this triggers rendering of added widget
+      let viewAdd = state.views[view.index];
+      console.log(`mutations: addConfigToWidget() - ${viewAdd.name} ${view.widget.name}`);
+      viewAdd.widgets[view.widget.widgetIndex].config.push(view.widget.config);
+      state.views.splice(view.index, 1, viewAdd);
     },
     removeWidgetFromView(state, view) {
       let widgetsTarget = state.views[view.index].widgets;
@@ -121,6 +150,18 @@ export const store = new Vuex.Store({
     removeWidgetsFromView(state, view) {
       let viewAdd = state.views[view.index];
       viewAdd.widgets = [];
+      state.views.splice(view.index, 0, viewAdd);
+    },
+    updateWidgetConfig(state, view) {
+      let widgetsTarget = state.views[view.index].widgets;
+      let index = _.findIndex(widgetsTarget, function(c) {
+        //TODO change to be id
+        return c.cid === view.config.cid; 
+      });
+
+      //add updated view
+      let viewAdd = state.views[view.index];
+      viewAdd.widgets[index].config = view.config.fields;
       state.views.splice(view.index, 0, viewAdd);
     }
   },

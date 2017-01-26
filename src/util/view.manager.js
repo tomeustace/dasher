@@ -161,4 +161,14 @@ function addNewView(name = '', widgets = []) {
   return viewState;
 }
 
+export
+function updateWidgetConfig(config) {
+  let view = getViewByName(config.viewName);
+  let index = _.findIndex(view.widgets, function(c) {
+    return c.cid === config.cid; 
+  });
+  view.widgets[index].config = config.fields;
+  updateViews(config.viewName, view);
+}
+
 

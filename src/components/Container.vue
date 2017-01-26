@@ -57,7 +57,6 @@
 /*eslint-disable */
 import { mapState } from 'vuex';
 /*eslint-enable */
-import { getViewNames } from './../util/view.manager';
 import ComponentShell from './ComponentShell';
 import Widget1 from './../widgets/Widget1';
 import Widget2 from './../widgets/Widget2';
@@ -85,7 +84,6 @@ const vm = {
   },
   created: function created() {
     //On create load any pre configured views
-    var viewNames = getViewNames();
     var loadedViews = localStorage.getItem('vd.views');
     loadedViews = JSON.parse(loadedViews);
     this.$store.dispatch('loadViews', loadedViews); ;

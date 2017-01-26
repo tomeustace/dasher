@@ -30,20 +30,10 @@
 
     <md-dialog md-open-from="#custom" md-close-to="#custom" ref="configureComponentDialog">
       <md-dialog-title v-model="widget">Configure widget {{widget}}</md-dialog-title>
-
-      <md-dialog-content>
-        <md-input-container class="save-configuration">
-          <label>URL</label>
-          <md-input></md-input>
-        </md-input-container>
-      </md-dialog-content>
-
-      <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="save('configureComponentDialog')">
-          <md-tooltip>Save</md-tooltip>
-          <md-icon>save</md-icon>
-        </md-button>
-      </md-dialog-actions>
+      <p v-model="config">{{config}}</p>
+      <!-- create this component -->
+      <widget-config :config="config"></widget-config>
+      <slot :config="config" name="config"></slot>
     </md-dialog>
 
   </div>
@@ -57,6 +47,7 @@ const vm = {
     return {
       counter: 0,
       widget: '',
+      config: '',
       name: '',
       id: this._uid, 
       cid: '',
@@ -75,7 +66,7 @@ const vm = {
       this.$refs[ref].close();
     },
     openDialog(name, ref) {
-      this.$refs[ref].open();
+      this.$refs[ref].open(this.config);
     },
     closeDialog(ref) {
     },
@@ -93,6 +84,7 @@ const vm = {
       console.log('ComponentShell - beforeMount ', widget.cid);
       this.name = widget.name;
       this.$data.cid = widget.cid;
+      this.config = this.$store.state.views[index].widgets[widgetIndex].config;
     } else {
       console.log('ComponentShell - beforeMount ERROR');
     }
