@@ -27,6 +27,17 @@ export const store = new Vuex.Store({
   state: {
     views: [],
   },
+  getters: {
+    getWidgetConfig: (state) => (viewName, cid) => {
+      let index = _.findIndex(state.views, function(v) {
+        return v.name === viewName; 
+      });
+      let target = _.find(state.views[index].widgets, function(widget) {
+        return widget.cid === cid; 
+      });
+      return target.config;
+    }
+  },
   actions: {
     addView ({ commit, state }, viewName) {
       console.log(`actions: addView() - ${viewName}`);

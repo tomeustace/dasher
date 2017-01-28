@@ -167,7 +167,8 @@ function updateWidgetConfig(config) {
   let index = _.findIndex(view.widgets, function(c) {
     return c.cid === config.cid; 
   });
-  view.widgets[index].config = config.fields;
+  //TODO rename below 
+  view.widgets[index].config = config.config;
   updateViews(config.viewName, view);
 }
 

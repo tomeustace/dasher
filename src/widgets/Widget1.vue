@@ -13,10 +13,7 @@
         maybe don't use slot for config CREATE NEW COMPONENT FOR CONFIG
       -->
         <md-dialog-content>
-          <md-input-container class="save-configuration" v-for="fild in config">
-            oh yeah
-          </md-input-container>
-          <md-input-container class="save-configuration" v-for="field in fields">
+          <md-input-container class="save-configuration" v-for="field in getWidgetConfig">
             <label for="field.id">{{field.title}}</label>
             <md-input type="text" :field.id="field.id" v-model="field.id">
           </md-input-container>
@@ -38,7 +35,7 @@
 import ComponentShell from './../components/ComponentShell';
 
 const vm = {
-  props: ['config'],
+  props: ['config','cid'],
   data() {
     return {
       fields: [
@@ -48,6 +45,10 @@ const vm = {
       name: 'Widdie',
       component: 'Add Component',
     };
+  },
+  computed: {
+    getWidgetConfig() {
+    },
   },
   methods: {
     addComponent() { },
