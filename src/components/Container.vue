@@ -26,8 +26,8 @@
         </md-dialog-actions>
       </md-dialog>
 
-      <md-tabs id="tabs" v-on:change="changeView()" class="md-primary">
-        <md-tab v-for="(view, index) in views" md-active v-bind:id="view.name" class="tab" :index="index" v-bind:md-label="view.name">
+      <md-tabs id="tabs" v-on:change="changeView" class="md-primary">
+        <md-tab v-for="(view, index) in views" md-active v-bind:viewname="view.name" v-bind:id="view.name" class="tab" :index="index" v-bind:md-label="view.name">
 
           <div class="widget-container">
             <component-shell v-for="(widget, index) in view.widgets" :index="index" class="widget" :is="widget.name"></component-shell>
@@ -58,20 +58,18 @@
 import { mapState } from 'vuex';
 /*eslint-enable */
 import ComponentShell from './ComponentShell';
-import Widget1 from './../widgets/Widget1';
-import Widget2 from './../widgets/Widget2';
-import Widget3 from './../widgets/Widget3';
-import Widget4 from './../widgets/Bar';
-import Widget5 from './../widgets/Widget5';
-import Widget6 from './../widgets/Widget6';
-import WebRTC from './../widgets/WebRTC';
+import widgetTemplate from './../widgets/WidgetTemplate';
+import widgetWebRTC from './../widgets/WebRTC';
+import widgetGoogleBar from './../widgets/GoogleBar';
+import widgetGoogleLine from './../widgets/GoogleLine';
+import widgetGooglePie from './../widgets/GooglePie';
 
 /*eslint-disable */
 function created() {
   console.log(vm.components);
 }
 
-var components = { ComponentShell, Widget1, Widget2, Widget3, Widget4, Widget5, Widget6, WebRTC };
+var components = { ComponentShell, widgetTemplate, widgetWebRTC, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
 
 const vm = {
   data() {
@@ -100,6 +98,7 @@ const vm = {
       var widgets = [];
       this.components.forEach(function(item) {
         if(item.toLowerCase().charAt(0) === 'w') {
+          //widgets.push(item.substring(6,item.length)); 
           widgets.push(item); 
         }
       });
@@ -123,7 +122,6 @@ const vm = {
       this.$refs[ref].open();
     },
     closeDialog(ref) {
-      //console.log(this.selectedOptions);
       this.$refs[ref].close();
     },
   },

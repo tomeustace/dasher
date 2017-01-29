@@ -1,7 +1,6 @@
 <template>
   <component-shell>
-      <div slot="widget3" id="widget3"> </div>
-      <div slot="name">
+      <div slot="widget">
         <p>Local</p>
         <video id="localVideo" autoplay muted style="width:40%;"></video>
         <p>Remote</p>
@@ -18,7 +17,6 @@ import ComponentShell from './../components/ComponentShell';
 const vm = {
   data() {
     return {
-      name: 'Bar Chart',
       component: 'Add Component',
     };
   },

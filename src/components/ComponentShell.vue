@@ -20,25 +20,12 @@
 
     <md-card>
       <md-card-content class="widget-card-content">
-        <slot  name="name"></slot>
+        <slot name="widget"></slot>
       </md-card-content>
     </md-card>
 
     <md-dialog md-open-from="#custom" md-close-to="#custom" ref="configureComponentDialog">
-      <md-dialog-title v-model="widget">Configure {{name}}</md-dialog-title>
-        <md-dialog-content>
-          <md-input-container class="save-configuration" v-for="field in config">
-            <label for="field.id">{{field.title}}</label>
-            <md-input type="text" :field.id="field.id" v-model="field.id">
-          </md-input-container>
-        </md-dialog-content>
-
-        <md-dialog-actions>
-          <md-button class="md-raised md-primary" @click="save('configureComponentDialog')">
-            <md-tooltip>Save</md-tooltip>
-            <md-icon>save</md-icon>
-          </md-button>
-        </md-dialog-actions>
+        <component-configuration :config="config" :name="name" :cid="cid"></component-configuration>
       <!-- <p v-model="config">{{config}}</p> -->
       <!-- create this component -->
       <!-- <widget-config :config="config"></widget-config> -->
@@ -51,16 +38,16 @@
 
 /*eslint-disable */
 
+import ComponentConfiguration from './ComponentConfiguration';
+
 const vm = {
+  props: ['viewname'],
   data() {
     return {
       counter: 0,
       widget: '',
-      config: [
-        {id: '', title: 'username'},
-        {id: '', title: 'URL'},
-      ],
       name: '',
+      config: '',
       id: this._uid, 
       cid: '',
     };
@@ -93,16 +80,21 @@ const vm = {
   },
   mounted() { 
     let index = this.$parent.$parent.$el.getAttribute('index');
+    //this.viewname = this.$parent.$parent.$el.getAttribute('viewname');
     let widgetIndex = this.$parent.$el.getAttribute('index');
     console.log('ComponentShell - beforeMount index ', index);
     let widget = this.$store.state.views[index].widgets[widgetIndex];
     if(!_.isUndefined(widget)) {
       console.log('ComponentShell - beforeMount ', widget.cid);
-      this.name = widget.name;
+      this.$data.name = widget.name;
       this.$data.cid = widget.cid;
       let loadedConfig = this.$store.state.views[index].widgets[widgetIndex].config;
       if(!_.isUndefined(loadedConfig)) {
+        //load saved config for widget
         this.config = loadedConfig;
+      } else {
+        //load config structure in widget
+        this.config = this.$parent.config;
       }
     } else {
       console.log('ComponentShell - beforeMount ERROR');
@@ -110,6 +102,9 @@ const vm = {
   },
   beforeUpdate() { },
   updated() { },
+  components: {
+    ComponentConfiguration,
+  }
 };
 
 /*eslint-disable */

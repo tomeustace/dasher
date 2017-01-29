@@ -16,6 +16,9 @@
       <md-tooltip>Add View</md-tooltip>
       <md-icon>add</md-icon>
     </md-button>
+    <md-icon class="md-raised md-accent" @click="">settings
+      <md-tooltip>Configuration</md-tooltip>
+    </md-icon>
   </md-toolbar>
 </template>
 <script>
@@ -76,6 +79,9 @@ export default vm;
   margin: 0 50px;
   width: auto;
   min-width: 100px;
+}
+.md-button {
+  min-width: 30px !important;
 }
 .logo {
   display: flex;

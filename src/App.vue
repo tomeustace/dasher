@@ -10,6 +10,9 @@ import Toolbar from './components/Toolbar';
 import Container from './components/Container';
 import ComponentShell from './components/ComponentShell';
 
+/*eslint-disable*/
+//TODO localize components to better fit structure
+/*eslint-enable*/
 export default {
   components: {
     Toolbar,
