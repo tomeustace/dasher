@@ -13,11 +13,14 @@
         <md-dialog-title v-model="activeView">Choose widgets for <i>{{activeView}}</i> </md-dialog-title>
 
         <md-dialog-content>
-          <!-- <div v-for="option in components"> -->
-          <div v-for="option in getComponents">
-            <p href="#" @click="addWidget(activeView, option)">{{option}}</p>
-            <!--<md-checkbox :true-value="option" :false-value="!option" :id="option" :name="option" v-model="selectedOptions">{{option}}</md-checkbox>-->
+          <div id="widget-select-container">
+            <md-card v-for="option in getComponents" id="widget-select-card">
+                <md-card-content>
+                  <p href="#" @click="addWidget(activeView, option)">{{option}}</p>
+                </md-card-content>
+            </md-card>
           </div>
+            <!--<md-checkbox :true-value="option" :false-value="!option" :id="option" :name="option" v-model="selectedOptions">{{option}}</md-checkbox>-->
         </md-dialog-content>
 
         <md-dialog-actions>
@@ -37,6 +40,10 @@
             <md-button @click="openDialog(view.name, 'addComponentDialog')">
               <md-tooltip>Add Widget</md-tooltip>
               <md-icon>add</md-icon>
+            </md-button>
+            <md-button @click="configureView(view.name)">
+              <md-tooltip>Configure View</md-tooltip>
+              <md-icon>edit</md-icon>
             </md-button>
             <md-button @click="removeWidgetsFromView(view.name)">
               <md-tooltip>Delete All Widgets</md-tooltip>
@@ -60,6 +67,7 @@ import { mapState } from 'vuex';
 import ComponentShell from './ComponentShell';
 import widgetTemplate from './../widgets/WidgetTemplate';
 import widgetWebRTC from './../widgets/WebRTC';
+import widgetDynamicBar from './../widgets/DynamicBar';
 import widgetGoogleBar from './../widgets/GoogleBar';
 import widgetGoogleLine from './../widgets/GoogleLine';
 import widgetGooglePie from './../widgets/GooglePie';
@@ -69,7 +77,7 @@ function created() {
   console.log(vm.components);
 }
 
-var components = { ComponentShell, widgetTemplate, widgetWebRTC, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
+var components = { ComponentShell, widgetTemplate, widgetWebRTC, widgetDynamicBar, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
 
 const vm = {
   data() {
@@ -113,6 +121,9 @@ const vm = {
       console.log('Container.addWidget');
       this.$store.dispatch('addWidgetToView', {name: activeView, widget: name});
     },
+    configureView(activeView, name) {
+      console.log('Container.configureView');
+    },
     removeWidgetsFromView(activeView, name) {
       console.log('Container.removeWidgetsFromView');
       this.$store.dispatch('removeWidgetsFromView', { name: activeView });
@@ -140,6 +151,16 @@ export default vm;
 }
 #start-container {
   opacity: .6;
+}
+#widget-select-container {
+  max-width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+#widget-select-card {
+  max-width: 200px;
+  margin: 10px;
 }
 .bottom-bar {
   background-color: white;

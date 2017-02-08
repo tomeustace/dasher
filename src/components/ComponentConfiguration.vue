@@ -31,6 +31,7 @@ const vm = {
       let cid = this.cid;
       let config = this.config;
       this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
+      this.$emit('configUpdate');
     },
   },
 };
