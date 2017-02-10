@@ -24,32 +24,32 @@
         </md-dialog-content>
 
         <md-dialog-actions>
-          <md-button class="md-primary" @click="closeDialog('addComponentDialog')">Cancel</md-button>
-          <md-button class="md-primary" @click="closeDialog('addComponentDialog')">Ok</md-button>
+          <md-button class="md-primary" @click.native="closeDialog('addComponentDialog')">Cancel</md-button>
+          <md-button class="md-primary" @click.native="closeDialog('addComponentDialog')">Ok</md-button>
         </md-dialog-actions>
       </md-dialog>
 
-      <md-tabs id="tabs" v-on:change="changeView" class="md-primary">
-        <md-tab v-for="(view, index) in views" md-active v-bind:viewname="view.name" v-bind:id="view.name" class="tab" :index="index" v-bind:md-label="view.name">
+      <md-tabs id="tabs" @change="changeView" class="md-primary">
+        <md-tab v-for="(view, index) in views" md-active :viewname="view.name" :id="view.name" class="tab" :index="index" :md-label="view.name">
 
           <div class="widget-container">
             <component-shell v-for="(widget, index) in view.widgets" :index="index" class="widget" :is="widget.name"></component-shell>
           </div>
 
           <div class="bottom-bar">
-            <md-button @click="openDialog(view.name, 'addComponentDialog')">
+            <md-button @click.native="openDialog(view.name, 'addComponentDialog')">
               <md-tooltip>Add Widget</md-tooltip>
               <md-icon>add</md-icon>
             </md-button>
-            <md-button @click="configureView(view.name)">
+            <md-button @click.native="configureView(view.name)">
               <md-tooltip>Configure View</md-tooltip>
               <md-icon>edit</md-icon>
             </md-button>
-            <md-button @click="removeWidgetsFromView(view.name)">
+            <md-button @click.native="removeWidgetsFromView(view.name)">
               <md-tooltip>Delete All Widgets</md-tooltip>
               <md-icon>delete</md-icon>
             </md-button>
-            <md-button @click="removeWidgetsFromView(view.name)">
+            <md-button @click.native="removeWidgetsFromView(view.name)">
               <md-tooltip>Delete View</md-tooltip>
               <md-icon>delete_forever</md-icon>
             </md-button>
@@ -93,6 +93,7 @@ const vm = {
     var loadedViews = localStorage.getItem('vd.views');
     loadedViews = JSON.parse(loadedViews);
     this.$store.dispatch('loadViews', loadedViews); ;
+    this.$store.dispatch('loadTables'); ;
   },
   //computed: mapState([ 'count' ])
   computed: {

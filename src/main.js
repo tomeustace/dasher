@@ -4,12 +4,16 @@ import Vue from 'vue';
 import VueMaterial from 'vue-material';
 import 'vue-material/dist/vue-material.css';
 import Vuex from 'vuex';
+import vueResource from 'vue-resource';
 import App from './App';
 
 import { addNewView, addWidgetToView, removeWidgetFromView, removeWidgetsFromView, updateWidgetConfig } from './util/view.manager';
 
 Vue.use(Vuex);
 Vue.use(VueMaterial);
+Vue.use(vueResource);
+
+Vue.http.options.xhr = { withCredentials: true };
 
 Vue.material.registerTheme('dasher', {
   primary: {
@@ -26,6 +30,7 @@ Vue.material.registerTheme('dasher', {
 export const store = new Vuex.Store({
   state: {
     views: [],
+    loadedTables: [],
   },
   getters: {
     getWidgetConfig: (state) => (viewName, cid) => {
@@ -36,7 +41,10 @@ export const store = new Vuex.Store({
         return widget.cid === cid; 
       });
       return target.config;
-    }
+    },
+    getTables: (state) => () => {
+      return state.loadedTables;
+    },
   },
   actions: {
     addView ({ commit, state }, viewName) {
@@ -74,6 +82,18 @@ export const store = new Vuex.Store({
         });
       } 
     },
+    loadTables ({ commit, state }) {
+      Vue.http.get('http://localhost:8080/myapp/myresource/1/TableNames').then(response => {
+        let tables = response.body.split(',');
+        tables = tables.map( (table) => { 
+          return { id: table, title: table };
+        });
+        commit('loadTables', tables);
+      }, response => {
+        console.log('error loading tables');
+      });
+    },
+      
     addWidgetToView ({ commit, state }, view ) {
       let viewName = view.name;
       let widgetName = view.widget;
@@ -138,6 +158,7 @@ export const store = new Vuex.Store({
     },
     addConfigToWidget(state, view) {
       if(_.isUndefined(state.views[view.index].widgets[view.widget.widgetIndex].config)) {
+        //TODO below defaults to array causes issue when saving an object
         state.views[view.index].widgets[view.widget.widgetIndex].config = [];
       }
       //this triggers rendering of added widget
@@ -172,9 +193,13 @@ export const store = new Vuex.Store({
 
       //add updated view
       let viewAdd = state.views[view.index];
-      viewAdd.widgets[index].config = view.config.fields;
+      //viewAdd.widgets[index].config = view.config.fields;
+      viewAdd.widgets[index].config = view.config.config;
       state.views.splice(view.index, 0, viewAdd);
-    }
+    },
+    loadTables(state, tables) {
+      state.loadedTables = tables;
+    },
   },
 });
 

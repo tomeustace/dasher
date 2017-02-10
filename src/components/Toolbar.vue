@@ -12,11 +12,11 @@
       <label>View Name</label>
       <md-input v-model="viewName"></md-input>
     </md-input-container>
-    <md-button class="md-raised md-primary" @click="saveView">
+    <md-button class="md-raised md-primary" @click.native="saveView">
       <md-tooltip>Add View</md-tooltip>
       <md-icon>add</md-icon>
     </md-button>
-    <md-icon class="md-raised md-accent" @click="">settings
+    <md-icon class="md-raised md-accent">settings
       <md-tooltip>Configuration</md-tooltip>
     </md-icon>
   </md-toolbar>

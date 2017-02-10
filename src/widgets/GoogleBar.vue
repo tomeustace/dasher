@@ -15,10 +15,8 @@ import ComponentShell from './../components/ComponentShell';
 const vm = {
   data() {
     return { 
-      config: [
-        {id: '', title: 'pie-endpoint'},
-        {id: '', title: 'options'},
-      ]
+      //get tables from store getter
+      widgetConfig: { type: 'select', name: 'Select Tables', options: this.$store.getters.getTables() },
     }
   },
   beforecreate() { },

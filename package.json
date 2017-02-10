@@ -16,7 +16,8 @@
     "d3": "^4.2.7",
     "lodash": "^4.17.0",
     "vue": "^2.1.0",
-    "vue-material": "^0.5.2",
+    "vue-material": "^0.7.0",
+    "vue-resource": "^1.2.0",
     "vuex": "^2.1.1"
   },
   "devDependencies": {
