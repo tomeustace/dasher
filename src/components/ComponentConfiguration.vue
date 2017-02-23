@@ -87,7 +87,9 @@ const vm = {
       let viewName = this.$parent.$parent.$parent.$parent.$el.id;
       let cid = this.cid;
       //set the user selected options
-      this.config[0].options = this.selectedOptions;
+      //this.config[0].options = this.selectedOptions;
+      this.config = [];
+      this.config[0] = {options: this.selectedOptions};
       let config = this.config;
       this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
       //event to parent to close dialog

@@ -60,18 +60,24 @@ const vm = {
       cid: '',
     };
   },
-  methods: { 
-    saveselectedoptionsnotworking(ref) {
-      //TODO fix viewName below 
-      let viewName = this.$parent.$parent.$el.id;
-      let cid = this.cid;
-      //set the user selected options
-      this.config[0].options = this.selectedOptions;
-      let config = this.config;
-      this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
-      console.log(ref);
-      this.$refs[ref].close();
+  computed: {
+    configUpdate () {
+      console.log('config update');
+      return this.$store.state.configUpdate;
     },
+  },
+  methods: { 
+   // saveselectedoptionsnotworking(ref) {
+   //   //TODO fix viewName below 
+   //   let viewName = this.$parent.$parent.$el.id;
+   //   let cid = this.cid;
+   //   //set the user selected options
+   //   this.config[0].options = this.selectedOptions;
+   //   let config = this.config;
+   //   this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
+   //   console.log(ref);
+   //   this.$refs[ref].close();
+   // },
     removeComponent: function(name) {
       console.log(this.$parent.$data.name);
       //TODO fix below parent references, find cleaner way

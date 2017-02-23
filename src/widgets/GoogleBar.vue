@@ -11,7 +11,7 @@
 import { mapState } from 'vuex';
 import ComponentShell from './../components/ComponentShell';
 
-function updateChart(widgetId) {
+function updateChart(config, widgetId) {
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(redrawChart);
     function redrawChart() {
@@ -21,12 +21,11 @@ function updateChart(widgetId) {
 
       //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
       //iterate selectedOptions and add value as  
-      let selo = ['tim1','tom1'];
-      _.each(selo, function(option) {
-        console.log('adding ' + option);
+      _.each(config[0].options.Keys, function(option) {
         data.addRow([option, 5]);
       });
-      var options = { title: 'chart title', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
+
+      var options = { title: 'Bar Chart', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
       var chart = new google.visualization.BarChart(document.querySelector(selector));
       chart.clearChart();
@@ -44,12 +43,12 @@ function createChart(widgetId) {
 
       //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
       //iterate selectedOptions and add value as  
-      let selo = ['tim','tom'];
-      _.each(selo, function(option) {
-        console.log('adding ' + option);
-        data.addRow([option, 5]);
-      });
-      var options = { title: 'chart title', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
+      //let selo = ['tim','tom'];
+      //_.each(selo, function(option) {
+      //  console.log('adding ' + option);
+      //  data.addRow([option, 5]);
+      //});
+      var options = { title: 'Bar Chart', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
       var chart = new google.visualization.BarChart(document.querySelector(selector));
       chart.draw(data, options);
@@ -75,12 +74,14 @@ const vm = {
     //is this right/best way to get cid here
     createChart(cid);
   },
+  //can use this.$store.subscribe... also
   computed: {
     config () {
       let config = this.$store.state.config;
       console.log('GoogleBar got config update' + config);
       if(config.length > 0) {
-        updateChart(config);
+        let conf = this.$store.getters.getWidgetConfig(this.$parent.$el.id, this.$children[0].cid);
+        updateChart(conf, this.$children[0].cid);
       }
     },
   },
