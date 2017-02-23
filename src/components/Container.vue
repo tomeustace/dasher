@@ -16,7 +16,11 @@
           <div id="widget-select-container">
             <md-card v-for="option in getComponents" id="widget-select-card">
                 <md-card-content>
-                  <p href="#" @click="addWidget(activeView, option)">{{option}}</p>
+                  <div id="widget-select-header">
+                    <md-icon class="md-raised md-accent">widgets</md-icon>
+                    <md-subheader href="#" @click.native="addWidget(activeView, option)">{{option}}</md-subheader>
+                  </div>
+                  <p>Some description here...</p>
                 </md-card-content>
             </md-card>
           </div>
@@ -154,14 +158,19 @@ export default vm;
   opacity: .6;
 }
 #widget-select-container {
-  max-width: 400px;
+  max-width: 500px;
   display: flex;
   flex-wrap: wrap;
   margin: 10px;
 }
 #widget-select-card {
   max-width: 200px;
+  overflow: noscroll;
+  min-height: 120px;
   margin: 10px;
+}
+#widget-select-header {
+  display: flex;
 }
 .bottom-bar {
   background-color: white;

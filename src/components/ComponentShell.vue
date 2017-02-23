@@ -19,14 +19,25 @@
     </md-toolbar> 
 
     <md-card>
-      <md-card-content class="widget-card-content">
+      <md-card-content class="widget-card-content" :widget-cid="cid">
         <slot name="widget"></slot>
       </md-card-content>
     </md-card>
 
     <md-dialog md-open-from="#custom" md-close-to="#custom" ref="configureComponentDialog">
+      <!-- TODO tried inlining dialog as close was not working so am using an event test here -->
+      <!-- <md-dialog-title>Configure {{name}}</md-dialog-title> -->
+      <!-- <md-icon class="md-raised md-accent">settings_applications</md-icon> -->
+
       <!-- Widgets define a custom config object that is passed to the below component -->
-      <component-configuration :config="config" :name="name" :cid="cid"></component-configuration>
+      <component-configuration :config="config" :name="name" @closeDialog="close" :cid="cid"></component-configuration>
+
+      <!-- <md-dialog-actions> -->
+      <!--   <md-button class="md-raised md-primary" @click.native="save('configureComponentDialog')"> -->
+      <!--     <md-tooltip>Save</md-tooltip> -->
+      <!--     <md-icon>save</md-icon> -->
+      <!--   </md-button> -->
+     <!-- </md-dialog-actions> -->
     </md-dialog>
 
   </div>
@@ -50,6 +61,17 @@ const vm = {
     };
   },
   methods: { 
+    saveselectedoptionsnotworking(ref) {
+      //TODO fix viewName below 
+      let viewName = this.$parent.$parent.$el.id;
+      let cid = this.cid;
+      //set the user selected options
+      this.config[0].options = this.selectedOptions;
+      let config = this.config;
+      this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
+      console.log(ref);
+      this.$refs[ref].close();
+    },
     removeComponent: function(name) {
       console.log(this.$parent.$data.name);
       //TODO fix below parent references, find cleaner way
@@ -62,7 +84,8 @@ const vm = {
       //TODO passing in first instance of array only currently
       this.$refs[ref].open(this.config);
     },
-    closeDialog(ref) {
+    close(ref) {
+      this.$refs[ref].close();
     },
   },
   beforeCreate() { },
@@ -76,16 +99,18 @@ const vm = {
     console.log('ComponentShell - beforeMount index ', index);
     let widget = this.$store.state.views[index].widgets[widgetIndex];
     if(!_.isUndefined(widget)) {
-      console.log('ComponentShell - beforeMount ', widget.cid);
+      console.log('ComponentShell - mounted ', widget.cid);
       this.$data.name = widget.name;
       this.$data.cid = widget.cid;
+      console.log('ComponentShell mounted ' + this.$data.cid);
       let loadedConfig = this.$store.state.views[index].widgets[widgetIndex].config;
       if(!_.isUndefined(loadedConfig)) {
         //load saved config for widget
         this.config = loadedConfig;
       } else {
         //load config structure in widget
-        this.config.push(this.$parent.widgetConfig);
+        this.config = this.$parent.widgetConfig;
+        //this.config.push(this.$parent.widgetConfig);
       }
     } else {
       console.log('ComponentShell - beforeMount ERROR');

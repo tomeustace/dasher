@@ -30,6 +30,7 @@ Vue.material.registerTheme('dasher', {
 export const store = new Vuex.Store({
   state: {
     views: [],
+    config: [],
     loadedTables: [],
   },
   getters: {
@@ -44,6 +45,59 @@ export const store = new Vuex.Store({
     },
     getTables: (state) => () => {
       return state.loadedTables;
+    },
+    getKeys: (state) => () => {
+      let keys = [
+        "user|agentName0",
+        "user|agentName1",
+        "user|agentName2",
+        "user|agentName3",
+        "user|agentName4",
+        "user|agentName5",
+      ];
+      keys = _.map(keys, function(key) {
+          return {"id": key}; 
+        });
+      return keys;
+    },
+    getAttributes: (state) => () => {
+       let attributes = [
+            "att|ALL",
+            "service|Credit Card",
+            "service|Home Equity",
+            "service|savings",
+            "service|Auto Loans",
+            "service|Checking",
+            "service|Mortgage",
+            "service|Business Banking",
+            "service|Merchant Services",
+            "service|Business Credit Card",
+            "service|Business Lending",
+            "region|New England",
+            "region|Mid-Atlantic",
+            "region|NorthEast",
+            "region|West North Central",
+            "region|South Atlantic",
+            "region|East South Central",
+            "region|West South Central",
+            "region|Mountain",
+            "region|Pacific",
+            "profile|Platinum",
+            "profile|Gold",
+            "profile|Silver",
+            "profile|Bronze",
+            "profile|Unknown",
+            "lang|English",
+            "lang|Spanish",
+            "channel|sipuri",
+            "channel|Chat",
+            "channel|Email",
+            "channel|Mobile Video"
+        ];
+        attributes = _.map(attributes, function(att) {
+          return {"id":att}; 
+        });
+        return attributes;
     },
   },
   actions: {
@@ -93,7 +147,6 @@ export const store = new Vuex.Store({
         console.log('error loading tables');
       });
     },
-      
     addWidgetToView ({ commit, state }, view ) {
       let viewName = view.name;
       let widgetName = view.widget;
@@ -195,7 +248,14 @@ export const store = new Vuex.Store({
       let viewAdd = state.views[view.index];
       //viewAdd.widgets[index].config = view.config.fields;
       viewAdd.widgets[index].config = view.config.config;
-      state.views.splice(view.index, 0, viewAdd);
+      //update the config array to trigger update on widget
+      state.config.splice(0, state.config.length-1);
+      _.each(view.config.config, function(conf) {
+        state.config.push(conf);
+      });
+      //state.config.splice(0, 1, ...view.config.config);
+      //start at index remove 1 item and add viewAdd
+      state.views.splice(view.index, 1, viewAdd);
     },
     loadTables(state, tables) {
       state.loadedTables = tables;

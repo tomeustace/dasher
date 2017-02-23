@@ -1,49 +1,101 @@
 <template>
   <component-shell>
-      <div slot="widget">
-        <h2>Google Chart Integration</h2>
-         <div id="bar_div"></div>
-      </div>
+      <!-- this binds config from component shell to widget -->
+      <div slot="widget" :config="config"> </div>
   </component-shell>
 </template>
 
 <script>
 
 /*eslint-disable*/
+import { mapState } from 'vuex';
 import ComponentShell from './../components/ComponentShell';
+
+function updateChart(widgetId) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(redrawChart);
+    function redrawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Dimension');
+      data.addColumn('number', 'Measure');
+
+      //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
+      //iterate selectedOptions and add value as  
+      let selo = ['tim1','tom1'];
+      _.each(selo, function(option) {
+        console.log('adding ' + option);
+        data.addRow([option, 5]);
+      });
+      var options = { title: 'chart title', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
+      let selector = `[widget-cid="${widgetId}"]`;
+      var chart = new google.visualization.BarChart(document.querySelector(selector));
+      chart.clearChart();
+      chart.draw(data, options);
+    }
+}
+
+function createChart(widgetId) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Dimension');
+      data.addColumn('number', 'Measure');
+
+      //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
+      //iterate selectedOptions and add value as  
+      let selo = ['tim','tom'];
+      _.each(selo, function(option) {
+        console.log('adding ' + option);
+        data.addRow([option, 5]);
+      });
+      var options = { title: 'chart title', width: 400, height: 300, chartArea: { width: "70%", height: "70%" } };
+      let selector = `[widget-cid="${widgetId}"]`;
+      var chart = new google.visualization.BarChart(document.querySelector(selector));
+      chart.draw(data, options);
+    }
+}
 
 const vm = {
   data() {
     return { 
       //get tables from store getter
-      widgetConfig: { type: 'select', name: 'Select Tables', options: this.$store.getters.getTables() },
+      name: 'Google Bar Chart',
+      widgetConfig: [
+        { type: 'select', name: 'Tables', options: this.$store.getters.getTables() },
+        { type: 'select', name: 'Attributes', options: this.$store.getters.getAttributes() },
+        { type: 'select', name: 'Keys', options: this.$store.getters.getKeys() },
+      ],
     }
   },
-  beforecreate() { },
-  created() { },
-  beforemount() { },
   mounted() {
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      data.addRows([ ['Mushrooms', 3], ['Onions', 1], ['Olives', 1], ['Zucchini', 1], ['Pepperoni', 2] ]);
-      var options = {'title':'How Much Pizza I Ate Last Night', 'width':300, 'height':250};
-      var chart = new google.visualization.BarChart(document.getElementById('bar_div'));
-      chart.draw(data, options);
-    }
+    //TODO get config to pass in
+    let cid = this.$children[0].cid;
+    console.log('GoogleBar mounted ' + cid);
+    //is this right/best way to get cid here
+    createChart(cid);
   },
-  beforeupdate() { },
-  updated() { },
+  computed: {
+    config () {
+      let config = this.$store.state.config;
+      console.log('GoogleBar got config update' + config);
+      if(config.length > 0) {
+        updateChart(config);
+      }
+    },
+  },
   components: {
     ComponentShell,
   }
 };
-/*eslint-disable */
+
 export default vm;
+
 </script>
 
 <style>
+#bar-chart {
+  min-width: 400px;
+  margin-top: 40px;
+}
 </style>
