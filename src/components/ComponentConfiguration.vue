@@ -52,6 +52,7 @@
 /*eslint-disable */
 import DimensionConfiguration from './DimensionConfiguration';
 
+//parent is ComponentShell
 const vm = {
   props: ['config','name','cid'],
   data() {
@@ -61,7 +62,7 @@ const vm = {
   },
   computed: {
     selection: function() {
-      console.log('selection ' + this.config);
+      console.log('ComponentConfiguration: computed: selection ' + this.config);
       let options = {};
       _.each(this.config, function(it) {
         console.log('selection ' + it.name);
@@ -78,7 +79,7 @@ const vm = {
   },
   watch: {
     selectedOptions: function(item) {
-      console.log('s');
+      console.log('ComponentConfiguration: watch: selectedOptions ');
     },
   },
   methods: { 
@@ -86,12 +87,10 @@ const vm = {
       //TODO fix viewName below 
       let viewName = this.$parent.$parent.$parent.$parent.$el.id;
       let cid = this.cid;
-      //set the user selected options
-      //this.config[0].options = this.selectedOptions;
-      this.config = [];
-      this.config[0] = {options: this.selectedOptions};
-      let config = this.config;
-      this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
+      let conf = {};
+      conf.default = this.config;
+      conf.selected = this.selectedOptions;
+      this.$store.dispatch('updateWidgetConfig', {viewName, conf, cid}); 
       //event to parent to close dialog
       this.$emit('closeDialog', ref);
     },

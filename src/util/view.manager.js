@@ -148,7 +148,7 @@ function addNewView(name = '', widgets = []) {
     let view = {};
     view.name = name;
     view.widgets = [];
-    view.config = [];
+    view.config = {};
     view.options = [];
     views.push(view);
     localStorage.setItem('vd.views', JSON.stringify(views));
@@ -162,14 +162,13 @@ function addNewView(name = '', widgets = []) {
 }
 
 export
-function updateWidgetConfig(config) {
-  let view = getViewByName(config.viewName);
+function updateWidgetConfig(viewName, options) {
+  let view = getViewByName(viewName);
   let index = _.findIndex(view.widgets, function(c) {
-    return c.cid === config.cid; 
+    return c.cid === options.cid; 
   });
-  //TODO rename below 
-  view.widgets[index].config = config.config;
-  updateViews(config.viewName, view);
+  view.widgets[index].config = options.conf;
+  updateViews(options.viewName, view);
 }
 
 

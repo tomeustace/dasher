@@ -30,7 +30,10 @@ Vue.material.registerTheme('dasher', {
 export const store = new Vuex.Store({
   state: {
     views: [],
-    config: [],
+    config: {
+     default: [],
+     selected: [],
+    },
     loadedTables: [],
   },
   getters: {
@@ -48,12 +51,12 @@ export const store = new Vuex.Store({
     },
     getKeys: (state) => () => {
       let keys = [
-        "user|agentName0",
-        "user|agentName1",
-        "user|agentName2",
-        "user|agentName3",
-        "user|agentName4",
-        "user|agentName5",
+        "user0",
+        "user1",
+        "user2",
+        "user3",
+        "user4",
+        "user5",
       ];
       keys = _.map(keys, function(key) {
           return {"id": key}; 
@@ -179,14 +182,16 @@ export const store = new Vuex.Store({
       });
       commit('removeWidgetsFromView', {index: index, viewName: viewName})
     },
-    updateWidgetConfig ({ commit, state }, config) {
-      let viewName = config.viewName;
-      updateWidgetConfig(config); 
+    updateWidgetConfig ({ commit, state }, options) {
+      let viewName = options.viewName;
+      let cid = options.cid;
+      let conf = options.conf;
+      updateWidgetConfig(viewName, options); 
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
         return view.name === viewName; 
       });
-      commit('updateWidgetConfig', {index, viewName, config})
+      commit('updateWidgetConfig', {index, viewName, conf, cid})
     },
   },
   //TODO CLEAN UP NAMING OF VARIABLES
@@ -237,25 +242,25 @@ export const store = new Vuex.Store({
       viewAdd.widgets = [];
       state.views.splice(view.index, 0, viewAdd);
     },
-    updateWidgetConfig(state, view) {
-      let widgetsTarget = state.views[view.index].widgets;
+    updateWidgetConfig(state, options) {
+      let widgetsTarget = state.views[options.index].widgets;
       let index = _.findIndex(widgetsTarget, function(c) {
         //TODO change to be id
-        return c.cid === view.config.cid; 
+        return c.cid === options.cid; 
       });
 
       //add updated view
-      let viewAdd = state.views[view.index];
+      let viewAdd = state.views[options.index];
       //viewAdd.widgets[index].config = view.config.fields;
-      viewAdd.widgets[index].config = view.config.config;
+      viewAdd.widgets[index].config = options.conf;
       //update the config array to trigger update on widget
-      state.config.splice(0, state.config.length-1);
-      _.each(view.config.config, function(conf) {
-        state.config.push(conf);
+      state.config.default.splice(0, state.config.default.length-1);
+      _.each(options.conf.default, function(conf) {
+        state.config.default.push(conf);
       });
       //state.config.splice(0, 1, ...view.config.config);
       //start at index remove 1 item and add viewAdd
-      state.views.splice(view.index, 1, viewAdd);
+      state.views.splice(options.index, 1, viewAdd);
     },
     loadTables(state, tables) {
       state.loadedTables = tables;

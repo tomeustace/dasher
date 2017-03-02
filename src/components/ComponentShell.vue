@@ -55,7 +55,8 @@ const vm = {
       counter: 0,
       widget: '',
       name: '',
-      config: [],
+      config: {},
+      selectedConfig: [], 
       id: this._uid, 
       cid: '',
     };
@@ -67,17 +68,6 @@ const vm = {
     },
   },
   methods: { 
-   // saveselectedoptionsnotworking(ref) {
-   //   //TODO fix viewName below 
-   //   let viewName = this.$parent.$parent.$el.id;
-   //   let cid = this.cid;
-   //   //set the user selected options
-   //   this.config[0].options = this.selectedOptions;
-   //   let config = this.config;
-   //   this.$store.dispatch('updateWidgetConfig', {viewName, cid, config}); 
-   //   console.log(ref);
-   //   this.$refs[ref].close();
-   // },
     removeComponent: function(name) {
       console.log(this.$parent.$data.name);
       //TODO fix below parent references, find cleaner way
@@ -88,6 +78,7 @@ const vm = {
     },
     openDialog(name, ref) {
       //TODO passing in first instance of array only currently
+      //this.$refs[ref].open(this.config.default);
       this.$refs[ref].open(this.config);
     },
     close(ref) {
@@ -95,9 +86,8 @@ const vm = {
     },
   },
   beforeCreate() { },
+  beforeMount() { },
   created() { },
-  beforeMount() {
-  },
   mounted() { 
     let index = this.$parent.$parent.$el.getAttribute('index');
     //this.viewname = this.$parent.$parent.$el.getAttribute('viewname');
@@ -112,7 +102,9 @@ const vm = {
       let loadedConfig = this.$store.state.views[index].widgets[widgetIndex].config;
       if(!_.isUndefined(loadedConfig)) {
         //load saved config for widget
-        this.config = loadedConfig;
+        //TODO BELOW SHOULD USE DEFAULT NEED TO FIX ARRAY ISSUE IN STORE
+        //this.config = loadedConfig.default;
+        this.config = loadedConfig[0];
       } else {
         //load config structure in widget
         this.config = this.$parent.widgetConfig;
@@ -137,7 +129,7 @@ export default vm;
 .component-shell {
   flex-direction: row;
   min-width: 300px;
-  max-width: 400px;
+  max-width: 600px;
   min-height: 200px;
 }
 .component-shell .md-toolbar {
