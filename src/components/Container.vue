@@ -18,7 +18,7 @@
                 <md-card-content>
                   <div id="widget-select-header">
                     <md-icon class="md-raised md-accent">widgets</md-icon>
-                    <md-subheader href="#" @click.native="addWidget(activeView, option)">{{option}}</md-subheader>
+                    <md-subheader href="#" @click.native="addWidget(activeView, option.componentName)">{{option.displayName}}</md-subheader>
                   </div>
                   <p>Some description here...</p>
                 </md-card-content>
@@ -111,8 +111,8 @@ const vm = {
       var widgets = [];
       this.components.forEach(function(item) {
         if(item.toLowerCase().charAt(0) === 'w') {
-          //widgets.push(item.substring(6,item.length)); 
-          widgets.push(item); 
+          widgets.push({componentName: item, displayName: item.substring(6,item.length) } ); 
+          //widgets.push(item); 
         }
       });
       return widgets;

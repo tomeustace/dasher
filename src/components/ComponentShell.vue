@@ -1,24 +1,29 @@
 <template>
   <div :id="_uid" :cid="cid" class="component-shell">
-    <md-toolbar class="md-dense">
+    <md-toolbar v-if="show" class="md-dense">
       <md-button class="md-icon-button">
         <md-tooltip>Widget ID {{cid}}</md-tooltip>
-	<md-icon class="md-accent">menu</md-icon>
+	<!-- <md-icon @click.native="clicked()" class="md-accent">menu</md-icon> -->
+	<md-icon @click.native="show = !show" class="md-accent">menu</md-icon>
       </md-button>
 
-      <h2 class="md-title" style="flex: 1">{{name}}</h2>
+        <h2 class="md-title" style="flex: 1">{{displayName}}</h2>
 
-      <md-button @click.native="openDialog(name, 'configureComponentDialog')" class="md-icon-button">
-        <md-tooltip>Configure Widget</md-tooltip>
-	<md-icon class="md-accent">settings</md-icon>
-      </md-button>
-      <md-button @click.native="removeComponent" class="md-icon-button">
-        <md-tooltip>Delete Widget</md-tooltip>
-	<md-icon class="md-accent">delete</md-icon>
-      </md-button>
+        <md-button @click.native="openDialog(name, 'configureComponentDialog')" class="md-icon-button">
+          <md-tooltip>Configure Widget</md-tooltip>
+          <md-icon class="md-accent">settings</md-icon>
+        </md-button>
+        <md-button @click.native="removeComponent" class="md-icon-button">
+          <md-tooltip>Delete Widget</md-tooltip>
+          <md-icon class="md-accent">delete</md-icon>
+        </md-button>
     </md-toolbar> 
 
     <md-card>
+      <md-button v-if="!show" @click.native="show = !show" class="md-icon-button">
+        <md-icon  class="widget-show-toolbar md-accent">menu</md-icon>
+        <md-tooltip>Show Toolbar</md-tooltip>
+      </md-button>
       <md-card-content class="widget-card-content" :widget-cid="cid">
         <slot name="widget"></slot>
       </md-card-content>
@@ -53,6 +58,7 @@ const vm = {
   data() {
     return {
       counter: 0,
+      show: true,
       widget: '',
       name: '',
       config: {},
@@ -62,12 +68,19 @@ const vm = {
     };
   },
   computed: {
+    displayName() {
+      let name = this.$data.name.substring(6, this.$data.name.length);
+      return name.replace(/([A-Z])/g, ' $1').trim();
+    },
     configUpdate () {
       console.log('target config update ' + this.$store.state.configUpdate);
       return this.$store.state.configUpdate;
     },
   },
   methods: { 
+    clicked: function clicked() {
+      console.log(this);
+    },
     removeComponent: function(name) {
       console.log(this.$parent.$data.name);
       //TODO fix below parent references, find cleaner way
@@ -87,12 +100,12 @@ const vm = {
   created() { },
   mounted() { 
     let index = this.$parent.$parent.$el.getAttribute('index');
-    //this.viewname = this.$parent.$parent.$el.getAttribute('viewname');
     let widgetIndex = this.$parent.$el.getAttribute('index');
     console.log('ComponentShell - beforeMount index ', index);
     let widget = this.$store.state.views[index].widgets[widgetIndex];
     if(!_.isUndefined(widget)) {
       console.log('ComponentShell - mounted ', widget.cid);
+      //this.$data.name = widget.name.substring(6, widget.name.length);
       this.$data.name = widget.name;
       this.$data.cid = widget.cid;
       console.log('ComponentShell mounted ' + this.$data.cid);
@@ -130,6 +143,9 @@ export default vm;
 }
 .component-shell .md-toolbar {
   background-color: white !important;
+}
+.widget-show-toolbar {
+  margin: 15px;
 }
 .md-card-header {
   display: flex;
