@@ -63,7 +63,7 @@ const vm = {
   },
   computed: {
     configUpdate () {
-      console.log('config update');
+      console.log('target config update ' + this.$store.state.configUpdate);
       return this.$store.state.configUpdate;
     },
   },
@@ -73,13 +73,10 @@ const vm = {
       //TODO fix below parent references, find cleaner way
       this.$store.dispatch('removeWidgetFromView', {name: this.$parent.$parent.$el.id, cid: this.$data.cid, widget: this.$parent.$data.name});
     },
-    configureComponent: function(name) {
-      alert('Configure not implemented.');
-    },
     openDialog(name, ref) {
       //TODO passing in first instance of array only currently
       //this.$refs[ref].open(this.config.default);
-      this.$refs[ref].open(this.config);
+      this.$refs[ref].open();
     },
     close(ref) {
       this.$refs[ref].close();
@@ -101,14 +98,13 @@ const vm = {
       console.log('ComponentShell mounted ' + this.$data.cid);
       let loadedConfig = this.$store.state.views[index].widgets[widgetIndex].config;
       if(!_.isUndefined(loadedConfig)) {
-        //load saved config for widget
         //TODO BELOW SHOULD USE DEFAULT NEED TO FIX ARRAY ISSUE IN STORE
-        //this.config = loadedConfig.default;
-        this.config = loadedConfig[0];
-      } else {
-        //load config structure in widget
+        //loaded config represents the last selection need to merge this with default config
+        //this.config = loadedConfig;
         this.config = this.$parent.widgetConfig;
-        //this.config.push(this.$parent.widgetConfig);
+      } else {
+        console.log('ComponentShell target widget Config ' + this.$parent.widgetConfig); 
+        this.config = this.$parent.widgetConfig;
       }
     } else {
       console.log('ComponentShell - beforeMount ERROR');

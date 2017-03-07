@@ -71,17 +71,6 @@ const vm = {
       this.selectedOptions = options;
     },
   },
-  created: function() {
-    console.log('ComponentConfiguration: created ' + this.config);
-  },
-  mounted: function() {
-    console.log('ComponentConfiguration: mounted ' + this.config);
-  },
-  watch: {
-    selectedOptions: function(item) {
-      console.log('ComponentConfiguration: watch: selectedOptions ');
-    },
-  },
   methods: { 
     save(ref) {
       //TODO fix viewName below 

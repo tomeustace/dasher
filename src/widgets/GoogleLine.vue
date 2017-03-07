@@ -30,10 +30,6 @@ function updateChart(config, widgetId) {
         _.each(config.selected.Keys, function(option) {
           data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
-      } else {
-        _.each(config[0].Keys, function(option) {
-          data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
-        });
       }
 
       var options = { title: 'Line Chart', width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
@@ -52,13 +48,6 @@ function createChart(widgetId) {
       data.addColumn('string', 'Dimension');
       data.addColumn('number', 'Measure');
 
-      //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
-      //iterate selectedOptions and add value as  
-      //let selo = ['tim','tom'];
-      //_.each(selo, function(option) {
-      //  console.log('adding ' + option);
-      //  data.addRow([option, 5]);
-      //});
       var options = { title: 'Line Chart', width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
       console.log('create chart, selector is ' + selector);
@@ -86,10 +75,6 @@ const vm = {
       ],
     }
   },
-  beforecreate() {
-  },
-  created() { },
-  beforemount() { },
   mounted() {
     //TODO get config to pass in
     this.cid = this.$children[0].cid;
@@ -100,16 +85,14 @@ const vm = {
     let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
     if(!_.isUndefined(conf)) {
       let cid = this.cid;
-      updateChart(conf[1], cid);
+      updateChart(conf, cid);
     }
   },
   //can use this.$store.subscribe... also
   computed: {
     config () {
-      let config = this.$store.state.config;
-      console.log('GoogleBar got config update' + this.cid);
-      if(config.default.length > 0) {
-        let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+      let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+      if(!_.isUndefined(conf)) {
         updateChart(conf, this.$children[0].cid);
       }
     },

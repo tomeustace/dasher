@@ -44,7 +44,11 @@ export const store = new Vuex.Store({
       let target = _.find(state.views[index].widgets, function(widget) {
         return widget.cid === cid; 
       });
-      return target.config;
+      if(!_.isUndefined(target)) {
+        return target.config;
+      } else {
+        return undefined;
+      }
     },
     getTables: (state) => () => {
       return state.loadedTables;
@@ -217,12 +221,12 @@ export const store = new Vuex.Store({
     addConfigToWidget(state, view) {
       if(_.isUndefined(state.views[view.index].widgets[view.widget.widgetIndex].config)) {
         //TODO below defaults to array causes issue when saving an object
-        state.views[view.index].widgets[view.widget.widgetIndex].config = [];
+        state.views[view.index].widgets[view.widget.widgetIndex].config = {};
       }
       //this triggers rendering of added widget
       let viewAdd = state.views[view.index];
       console.log(`mutations: addConfigToWidget() - ${viewAdd.name} ${view.widget.name}`);
-      viewAdd.widgets[view.widget.widgetIndex].config.push(view.widget.config);
+      viewAdd.widgets[view.widget.widgetIndex].config = view.widget.config;
       state.views.splice(view.index, 1, viewAdd);
     },
     removeWidgetFromView(state, view) {
@@ -235,7 +239,7 @@ export const store = new Vuex.Store({
       //add updated view
       let viewAdd = state.views[view.index];
       viewAdd.widgets = widgetsTarget;
-      state.views.splice(view.index, 0, viewAdd);
+      state.views.splice(view.index, 1, viewAdd);
     },
     removeWidgetsFromView(state, view) {
       let viewAdd = state.views[view.index];

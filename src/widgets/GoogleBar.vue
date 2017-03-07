@@ -32,11 +32,7 @@ function updateChart(config, widgetId) {
         _.each(config.selected.Keys, function(option) {
           data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
-      } else {
-        _.each(config[0].Keys, function(option) {
-          data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
-        });
-      }
+      } 
 
       var options = { title: 'Bar Chart', width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
@@ -93,19 +89,14 @@ const vm = {
     let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
     if(!_.isUndefined(conf)) {
       let cid = this.cid;
-      setTimeout(function() {
-        updateChart(conf[1], cid);
-      }, 4000);
-      updateChart(conf[1], cid);
+      updateChart(conf, cid);
     }
   },
   //can use this.$store.subscribe... also
   computed: {
     config () {
-      let config = this.$store.state.config;
-      console.log('GoogleBar got config update' + this.cid);
-      if(config.default.length > 0) {
-        let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+      let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+      if(!_.isUndefined(conf)) {
         updateChart(conf, this.$children[0].cid);
       }
     },
