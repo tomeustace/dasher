@@ -48,11 +48,5 @@ describe('Toolbar.vue', () => {
     expect(typeof Toolbar.methods.saveView).to.equal('function')
   });
 
-  // it('sets the correct default data', () => {
-  //   expect(typeof MyComponent.data).toBe('function')
-  //   const defaultData = MyComponent.data()
-  //   expect(defaultData.message).toBe('hello!')
-  // });
-
 });
 /*eslint-enable*/

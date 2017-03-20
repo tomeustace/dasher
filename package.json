@@ -14,12 +14,13 @@
   },
   "dependencies": {
     "d3": "^4.2.7",
+    "es6-promise": "^4.1.0",
+    "function-bind": "^1.0.2",
     "lodash": "^4.17.0",
     "vue": "^2.1.0",
     "vue-material": "^0.7.0",
     "vue-resource": "^1.2.0",
-    "vuex": "^2.1.1",
-    "function-bind": "^1.0.2"
+    "vuex": "^2.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
