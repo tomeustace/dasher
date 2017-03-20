@@ -4,10 +4,14 @@
       <md-icon class="md-raised md-accent">settings_applications</md-icon>
       <md-dialog-content> 
 
+        <md-input-container class="save-configuration">
+          <label for="title">Title</label>
+          <md-input type="text" placeholder="Widget Title" value="" v-model="title">
+        </md-input-container>
         <!-- NEED TO UPDATE CONFIG SO ALL TABLE OPTIONS ARE ALWAYS DISPLAYED IN CONFIG WHILE
           KEEPING PREVIOUS SELECTION INTACT -->
         <!-- NEED TO UPDATE SELECTEDOPTINS TO BE UNIQUE FOR EACH CONF ITEM -->
-        <div v-for="conf in config">
+        <div v-for="conf in config" >
 
           <md-input-container v-if="conf.type === 'select'">
             <label for="conf.name">{{conf.name}}</label>
@@ -20,19 +24,20 @@
           <!-- selection triggers computed property currently -->
           {{selection}}
 
-          <div v-if="selectedOptions[conf.name].length > 0"> 
+          <div v-if="selectedOptions[conf.name].length > 0 && conf.name != 'Title'"> 
             <md-subheader>Selected {{conf.name}}</md-subheader>
             <md-chips v-model="selectedOptions[conf.name]" md-static>
               <template scope="chip">{{ chip.value }}</template>
             </md-chips>
           </div>
 
-          <md-input-container v-if="conf.type !== 'select'" class="save-configuration" v-for="field in conf">
-            <label for="field.id">{{field.title}}</label>
-            <md-input type="text" :field.id="field.id" v-model="field.id">
-          </md-input-container>
+          <!-- <md-input-container v-if="conf.type !== 'select'" class="save-configuration" v-for="field in conf"> -->
+            <!-- <label for="title">Title</label> -->
+            <!-- <md-input type="text" placeholder="Widget Title" value="" v-model="selectedOptions['title']"> -->
+          <!-- </md-input-container> -->
 
         </div>
+
 
       </md-dialog-content>
 
@@ -57,6 +62,7 @@ const vm = {
   props: ['config','name','cid'],
   data() {
     return {
+      title: '',
       selectedOptions: {},
     };
   },
@@ -68,6 +74,7 @@ const vm = {
         console.log('selection ' + it.name);
         options[it.name] = [];
       });
+      options['Title'] = this.title;
       this.selectedOptions = options;
     },
   },
@@ -100,5 +107,6 @@ export default vm;
   padding: 10px;
   min-width: 300px;
   min-height: 200px;
+  overflow-y: scroll;
 }
 </style>

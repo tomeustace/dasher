@@ -1,3 +1,6 @@
+//polyfil for unit tests
+import 'es6-promise/auto';
+
 import _ from 'lodash';
 
 import Vue from 'vue';
@@ -7,7 +10,7 @@ import Vuex from 'vuex';
 import vueResource from 'vue-resource';
 import App from './App';
 
-import { addNewView, addWidgetToView, removeWidgetFromView, removeWidgetsFromView, updateWidgetConfig } from './util/view.manager';
+import { addNewView, addWidgetToView, removeView, removeWidgetFromView, removeWidgetsFromView, updateWidgetConfig } from './util/view.manager';
 
 Vue.use(Vuex);
 Vue.use(VueMaterial);
@@ -21,7 +24,7 @@ Vue.material.registerTheme('dasher', {
     hue: 'A200',
   },
   accent: {
-    color: 'grey',
+    color: 'white',
     hue: 300,
   },
 });
@@ -50,17 +53,43 @@ export const store = new Vuex.Store({
         return undefined;
       }
     },
+    updateTableData: (state) => (conf) => {
+      //TODO if no conf set return, triggered onload
+      if(_.isUndefined(conf.selected)) {
+        return;
+      }
+
+      let table = 'table|' + conf.selected.Tables;
+      let attributes = conf.selected.Attributes;
+      let keys = conf.selected.Keys;
+      let attSet = [...attributes, ...keys];
+      let reqObj = {'table':table,'time':'','attSet':[attSet],'trend':0};
+      reqObj = JSON.stringify(reqObj);
+      reqObj = encodeURIComponent(reqObj);
+      let uri = 'http://localhost:8080/myapp/myresource/1/' + reqObj;
+      console.log('updateTableData request ' + uri);
+      let result = Vue.http.get(uri);
+      return result;
+      // Vue.http.get(uri).then(response => {
+      //   let data = response.body;
+      //   console.log(data);
+      //   result.resolve(data);
+      // }, response => {
+      //   console.log('error retrieving data for ' + uri);
+      //   result.reject(data);
+      // });
+    },
     getTables: (state) => () => {
       return state.loadedTables;
     },
     getKeys: (state) => () => {
       let keys = [
-        "user0",
-        "user1",
-        "user2",
-        "user3",
-        "user4",
-        "user5",
+        "USER|agentName0",
+        "USER|agentName1",
+        "USER|agentName2",
+        "USER|agentName3",
+        "USER|agentName4",
+        "USER|agentName5",
       ];
       keys = _.map(keys, function(key) {
           return {"id": key}; 
@@ -147,8 +176,9 @@ export const store = new Vuex.Store({
       Vue.http.get('http://localhost:8080/myapp/myresource/1/TableNames').then(response => {
         let tables = response.body.split(',');
         tables = tables.map( (table) => { 
-          return { id: table, title: table };
+          return { id: table };
         });
+        console.log('loading tables');
         commit('loadTables', tables);
       }, response => {
         console.log('error loading tables');
@@ -164,6 +194,18 @@ export const store = new Vuex.Store({
         return view.name === viewName; 
       });
       commit('addWidgetToView', {index: index, widget: {name: widgetName, cid: cid}})
+    },
+    removeView ({ commit, state }, view ) {
+      let viewName = view.name;
+      let widgetName = view.widget;
+      removeView(viewName); 
+
+      //need to find index of view by name
+      let index = _.findIndex(state.views, function(view) {
+        return view.name === viewName; 
+      });
+      commit('removeView', {index, viewName})
+
     },
     removeWidgetFromView ({ commit, state }, view ) {
       let viewName = view.name;
@@ -203,6 +245,10 @@ export const store = new Vuex.Store({
     addView(state, viewName) {
       console.log(`mutation: addView() - ${viewName}`);
       state.views.push({name: viewName});
+    },
+    removeView(state, options) {
+      console.log(`mutation: removeView() - ${options.viewName}`);
+      state.views.splice(options.index, 1);
     },
     loadViews(state, views) {
       console.log(`mutation: loadedViews() - ${views}`);
@@ -267,6 +313,7 @@ export const store = new Vuex.Store({
       state.views.splice(options.index, 1, viewAdd);
     },
     loadTables(state, tables) {
+      console.log(tables);
       state.loadedTables = tables;
     },
   },

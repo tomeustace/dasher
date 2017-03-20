@@ -15,6 +15,7 @@ function updateChart(config, widgetId) {
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(redrawChart);
     function redrawChart() {
+      let title = '';
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Dimension');
       data.addColumn('number', 'Measure');
@@ -23,10 +24,12 @@ function updateChart(config, widgetId) {
       //iterate selectedOptions and add value as  
       //TODO FIX CONFIG ARRAY TO CLEAN UP BELOW
       if(!_.isUndefined(config.Keys)) {
+        title = config.Title;
         _.each(config.Keys, function(option) {
           data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
       } else if(!_.isUndefined(config.selected)) {
+        title = config.selected.Title;
         _.each(config.selected.Keys, function(option) {
           data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
@@ -36,7 +39,7 @@ function updateChart(config, widgetId) {
         });
       }
 
-      var options = { title: 'Pie Chart', width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
+      var options = { title, width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
       var chart = new google.visualization.PieChart(document.querySelector(selector));
       chart.clearChart();

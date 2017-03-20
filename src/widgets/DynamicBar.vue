@@ -1,7 +1,6 @@
 <template>
   <component-shell>
     <div slot="widget" v-on:update="configUpdate">
-      <h2>Dynamic Bar Chart</h2>
       <div id="dynamic-bar" slot="widget" :config="config"> </div>
     </div>
   </component-shell>

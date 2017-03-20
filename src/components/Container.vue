@@ -53,7 +53,7 @@
               <md-tooltip>Delete All Widgets</md-tooltip>
               <md-icon>delete</md-icon>
             </md-button>
-            <md-button @click.native="removeWidgetsFromView(view.name)">
+            <md-button @click.native="removeView(view.name)">
               <md-tooltip>Delete View</md-tooltip>
               <md-icon>delete_forever</md-icon>
             </md-button>
@@ -75,13 +75,14 @@ import widgetDynamicBar from './../widgets/DynamicBar';
 import widgetGoogleBar from './../widgets/GoogleBar';
 import widgetGoogleLine from './../widgets/GoogleLine';
 import widgetGooglePie from './../widgets/GooglePie';
+import widgetD3Pie from './../widgets/D3Pie';
 
 /*eslint-disable */
 function created() {
   console.log(vm.components);
 }
 
-var components = { ComponentShell, widgetTemplate, widgetWebRTC, widgetDynamicBar, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
+var components = { ComponentShell, widgetTemplate, widgetD3Pie, widgetWebRTC, widgetDynamicBar, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
 
 const vm = {
   data() {
@@ -96,13 +97,11 @@ const vm = {
     //On create load any pre configured views
     var loadedViews = localStorage.getItem('vd.views');
     loadedViews = JSON.parse(loadedViews);
-    this.$store.dispatch('loadViews', loadedViews); ;
-    this.$store.dispatch('loadTables'); ;
+    this.$store.dispatch('loadViews', loadedViews); 
+    this.$store.dispatch('loadTables'); 
   },
-  //computed: mapState([ 'count' ])
   computed: {
     // map this.views to store.state.views
-    //...mapState(['views']),
     views () {
       return this.$store.state.views;
     },
@@ -132,6 +131,10 @@ const vm = {
     removeWidgetsFromView(activeView, name) {
       console.log('Container.removeWidgetsFromView');
       this.$store.dispatch('removeWidgetsFromView', { name: activeView });
+    },
+    removeView(activeView, name) {
+      console.log('Container.removeView');
+      this.$store.dispatch('removeView', { name: activeView });
     },
     openDialog(viewName, ref) {
       this.activeView = viewName;

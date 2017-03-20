@@ -7,7 +7,7 @@
 	<md-icon @click.native="show = !show" class="md-accent">menu</md-icon>
       </md-button>
 
-        <h2 class="md-title" style="flex: 1">{{displayName}}</h2>
+        <span class="md-title" style="flex: 1">{{displayName}}</span>
 
         <md-button @click.native="openDialog(name, 'configureComponentDialog')" class="md-icon-button">
           <md-tooltip>Configure Widget</md-tooltip>
@@ -150,7 +150,7 @@ export default vm;
 .md-card-header {
   display: flex;
 }
-h2 {
+.md-title {
   color: #616161;
 }
 </style>

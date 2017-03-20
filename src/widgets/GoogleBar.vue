@@ -11,30 +11,45 @@
 import { mapState } from 'vuex';
 import ComponentShell from './../components/ComponentShell';
 
-function updateChart(config, widgetId) {
+function updateChart(config, measure, widgetId) {
     if(_.isUndefined(config)) return;
 
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(redrawChart);
     function redrawChart() {
+      let title = '';
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Dimension');
       data.addColumn('number', 'Measure');
 
-      //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
-      //iterate selectedOptions and add value as  
-      //TODO FIX CONFIG ARRAY TO CLEAN UP BELOW
-      if(!_.isUndefined(config.Keys)) {
-        _.each(config.Keys, function(option) {
-          data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
+      if(!_.isUndefined(config.Attributes)) {
+        title = config.Title;
+        _.each(config.Attributes, function(option) {
+          data.addRow([option, measure]);
+          //data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
       } else if(!_.isUndefined(config.selected)) {
-        _.each(config.selected.Keys, function(option) {
-          data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
+        title = config.selected.Title;
+        _.each(config.selected.Attributes, function(option) {
+          data.addRow([option, measure]);
+          //data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
       } 
 
-      var options = { title: 'Bar Chart', width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
+      //TODO FIX CONFIG ARRAY TO CLEAN UP BELOW
+      //if(!_.isUndefined(config.Keys)) {
+      //  title = config.Title;
+      //  _.each(config.Keys, function(option) {
+      //    data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
+      //  });
+      //} else if(!_.isUndefined(config.selected)) {
+      //  title = config.selected.Title;
+      //  _.each(config.selected.Keys, function(option) {
+      //    data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
+      //  });
+      //} 
+
+      var options = { title, width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
       var chart = new google.visualization.BarChart(document.querySelector(selector));
       chart.clearChart();
@@ -79,6 +94,11 @@ const vm = {
       ],
     }
   },
+  methods: {
+    dataUpdated: function() {
+      console.log('got update');
+    },
+  },
   mounted() {
     //TODO get config to pass in
     this.cid = this.$children[0].cid;
@@ -87,9 +107,10 @@ const vm = {
     createChart(this.cid);
     //TODO THIS IS COMING BACK AS ARRAY SHOULD BE CONFIG OBJECT
     let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+    //TODO need to update upateTableData to operate refresh
     if(!_.isUndefined(conf)) {
       let cid = this.cid;
-      updateChart(conf, cid);
+      updateChart(conf, 5, cid);
     }
   },
   //can use this.$store.subscribe... also
@@ -97,7 +118,14 @@ const vm = {
     config () {
       let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
       if(!_.isUndefined(conf)) {
-        updateChart(conf, this.$children[0].cid);
+        this.$store.getters.updateTableData(conf).then( response => {
+            let data = response.body;
+            console.log(data);
+            updateChart(conf, parseInt(data.measures), this.$children[0].cid);
+          }, response => {
+            console.log('error retrieving data for ' + uri);
+          }
+        );
       }
     },
   },

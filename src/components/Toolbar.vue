@@ -16,21 +16,11 @@
       <md-tooltip>Add View</md-tooltip>
       <md-icon>add</md-icon>
     </md-button>
-    <md-icon class="md-raised md-accent">settings
-      <md-tooltip>Configuration</md-tooltip>
-    </md-icon>
+      <!-- <md-tooltip>Configuration</md-tooltip> -->
+      <!-- <md-icon @click.native="changeTheme" class="md-raised md-accent">settings</md-icon> -->
   </md-toolbar>
 </template>
 <script>
-
-/*eslint-disable */
-function created() {
-  console.log('created toolbar');
-}
-
-function mounted() {
-  console.log('mounted toolbar');
-}
 
 const vm = {
   data() {
@@ -40,20 +30,14 @@ const vm = {
   },
   methods: {
     saveView() {
+      console.log('Toolbar: saveView');
       this.$store.dispatch('addView', this.viewName);
       //bus.$emit('view.save', this.viewName);
     },
   },
-  beforeCreate() { },
-  created() {
-    created();
-  },
-  beforeMount() { },
   mounted() {
-    mounted();
+   return 'mounted'; 
   },
-  beforeUpdate() { },
-  updated() { },
 };
 /*eslint-disable */
 export default vm;

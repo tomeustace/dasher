@@ -97,6 +97,23 @@ function addIdToWidget(viewName = '', widgetId) {
 }
 
 /**
+ * removeView - remove view.
+ *
+ * @param viewName=''
+ */
+export
+function removeView(viewName = '') {
+
+  let views = getViews();
+  _.remove(views, function(v) {
+    return v.name === viewName; 
+  });
+
+  //save to local storage
+  localStorage.setItem('vd.views', JSON.stringify(views));
+}
+
+/**
  * removeWidgetFromView - remove component from view.
  *
  * @param viewName=''
