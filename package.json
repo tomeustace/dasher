@@ -15,6 +15,7 @@
   "dependencies": {
     "d3": "^4.2.7",
     "es6-promise": "^4.1.0",
+    "event-drops": "^0.2.0",
     "function-bind": "^1.0.2",
     "lodash": "^4.17.0",
     "vue": "^2.1.0",

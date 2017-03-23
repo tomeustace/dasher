@@ -7,7 +7,7 @@
 	<md-icon @click.native="show = !show" class="md-accent">menu</md-icon>
       </md-button>
 
-        <span class="md-title" style="flex: 1">{{displayName}}</span>
+        <span class="md-title widget-title" style="flex: 1">{{displayName}}</span>
 
         <md-button @click.native="openDialog(name, 'configureComponentDialog')" class="md-icon-button">
           <md-tooltip>Configure Widget</md-tooltip>
@@ -138,7 +138,7 @@ export default vm;
 .component-shell {
   flex-direction: row;
   min-width: 300px;
-  max-width: 600px;
+  max-width: 800px;
   min-height: 200px;
 }
 .component-shell .md-toolbar {

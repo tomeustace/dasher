@@ -76,13 +76,14 @@ import widgetGoogleBar from './../widgets/GoogleBar';
 import widgetGoogleLine from './../widgets/GoogleLine';
 import widgetGooglePie from './../widgets/GooglePie';
 import widgetD3Pie from './../widgets/D3Pie';
+import widgetEventDrops from './../widgets/EventDrops';
 
 /*eslint-disable */
 function created() {
   console.log(vm.components);
 }
 
-var components = { ComponentShell, widgetTemplate, widgetD3Pie, widgetWebRTC, widgetDynamicBar, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
+var components = { ComponentShell, widgetTemplate, widgetD3Pie, widgetEventDrops, widgetWebRTC, widgetDynamicBar, widgetGoogleBar, widgetGoogleLine, widgetGooglePie };
 
 const vm = {
   data() {

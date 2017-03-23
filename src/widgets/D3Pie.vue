@@ -13,7 +13,7 @@ import ComponentShell from './../components/ComponentShell';
 let cid;
 var svg, pie, arc, color, legendGroup, legendCount;
 var optionsCreated = false;
-var socket = new WebSocket("ws://localhost:8080/", "dashboard-visitor");
+var socket = new WebSocket("ws://localhost:9090/", "dashboard-visitor");
 
 socket.onopen = function(event) {
   socket.send("visitor");

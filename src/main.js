@@ -1,4 +1,3 @@
-//polyfil for unit tests
 import 'es6-promise/auto';
 
 import _ from 'lodash';

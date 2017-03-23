@@ -118,14 +118,17 @@ const vm = {
     config () {
       let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
       if(!_.isUndefined(conf)) {
-        this.$store.getters.updateTableData(conf).then( response => {
-            let data = response.body;
-            console.log(data);
-            updateChart(conf, parseInt(data.measures), this.$children[0].cid);
-          }, response => {
-            console.log('error retrieving data for ' + uri);
-          }
-        );
+        let prom = this.$store.getters.updateTableData(conf);
+        if(!_.isUndefined(prom)) { 
+          prom.then( response => {
+              let data = response.body;
+              console.log(data);
+              updateChart(conf, parseInt(data.measures), this.$children[0].cid);
+            }, response => {
+              console.log('error retrieving data for ' + uri);
+            }
+          );
+        }
       }
     },
   },
