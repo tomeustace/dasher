@@ -14,6 +14,9 @@ npm run dev
 # build for production with minification
 npm run build
 
+# test in production with minification
+cd dist/ && http-server -p 8090
+
 # run unit tests
 npm run unit
 
@@ -24,6 +27,8 @@ npm run e2e
 npm test
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Run produc
+
+
 
 

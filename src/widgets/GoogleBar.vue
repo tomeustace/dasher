@@ -16,6 +16,7 @@ function updateChart(config, measure, widgetId) {
 
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(redrawChart);
+
     function redrawChart() {
       let title = '';
       var data = new google.visualization.DataTable();
@@ -26,28 +27,13 @@ function updateChart(config, measure, widgetId) {
         title = config.Title;
         _.each(config.Attributes, function(option) {
           data.addRow([option, measure]);
-          //data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
       } else if(!_.isUndefined(config.selected)) {
         title = config.selected.Title;
         _.each(config.selected.Attributes, function(option) {
           data.addRow([option, measure]);
-          //data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
         });
       } 
-
-      //TODO FIX CONFIG ARRAY TO CLEAN UP BELOW
-      //if(!_.isUndefined(config.Keys)) {
-      //  title = config.Title;
-      //  _.each(config.Keys, function(option) {
-      //    data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
-      //  });
-      //} else if(!_.isUndefined(config.selected)) {
-      //  title = config.selected.Title;
-      //  _.each(config.selected.Keys, function(option) {
-      //    data.addRow([option, Math.floor((Math.random() * 10) + 1)]);
-      //  });
-      //} 
 
       var options = { title, width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
@@ -118,17 +104,22 @@ const vm = {
     config () {
       let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
       if(!_.isUndefined(conf)) {
-        let prom = this.$store.getters.updateTableData(conf);
-        if(!_.isUndefined(prom)) { 
-          prom.then( response => {
-              let data = response.body;
-              console.log(data);
-              updateChart(conf, parseInt(data.measures), this.$children[0].cid);
-            }, response => {
-              console.log('error retrieving data for ' + uri);
-            }
-          );
-        }
+        let that = this;
+        setInterval(function() {
+
+          let prom = that.$store.getters.updateTableData(conf);
+          if(!_.isUndefined(prom)) { 
+            prom.then( response => {
+                let data = response.body;
+                console.log(data);
+                updateChart(conf, parseInt(data.measures), that.$children[0].cid);
+              }, response => {
+                console.log('error retrieving data for ' + uri);
+              }
+            );
+          }
+        
+        }, 3000);
       }
     },
   },

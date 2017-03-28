@@ -11,7 +11,7 @@ import { mapState } from 'vuex';
 import ComponentShell from './../components/ComponentShell';
 import eventDrops from 'event-drops';
 
-function updateTimeline(conf) {
+function updateTimeline(conf, widgetId) {
       // create dataset
       var data = [];
       var endTime = Date.now();
@@ -58,8 +58,9 @@ function updateTimeline(conf) {
           .end(new Date(endTime));
 
       // bind data with DOM
-      d3.select("#event-drops").select('svg').remove();
-      var element = d3.select("#event-drops").datum(data);
+      let selector = `[widget-cid="${widgetId}"]`;
+      d3.select(selector).select('svg').remove();
+      var element = d3.select(selector).datum(data);
       // draw the chart
       eventDropsChart(element);
 }
@@ -79,17 +80,20 @@ const vm = {
     //this is required to set cid
     this.cid = this.$children[0].cid;
     let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
+    let that = this;
     if(!_.isUndefined(conf)) {
-      updateTimeline(conf.Services);
+      setTimeout(function() {
+        updateTimeline(conf.Services, that.cid);
+      }, 2000);
     }
   },
   //can use this.$store.subscribe... also
   computed: {
     config () {
       let conf = this.$store.getters.getWidgetConfig(this.$parent.id, this.cid);
-      if(!_.isUndefined(conf)) {
+      if(!_.isUndefined(conf) && !_.isUndefined(conf.selected)) {
         console.log('Event Drops config updated ');
-        updateTimeline(conf.selected.Services);
+        updateTimeline(conf.selected.Services, this.$children[0].cid);
       }
     },
   },

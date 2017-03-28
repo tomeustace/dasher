@@ -48,9 +48,9 @@ function createPie(widgetId) {
   svg = d3.select(selector) 
       .append("svg")
       .attr("width", width)
-      .attr("height", height)
+      .attr("height", height - 50)
       .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+      .attr("transform", "translate(" + width / 2 + "," + height / 3 + ")");
 
   var legend = d3.select(selector).append("svg")
       .attr("width", width / 2)
