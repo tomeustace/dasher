@@ -66,7 +66,6 @@ export const store = new Vuex.Store({
       reqObj = JSON.stringify(reqObj);
       reqObj = encodeURIComponent(reqObj);
       let uri = 'http://localhost:8080/myapp/myresource/1/' + reqObj;
-      console.log('updateTableData request ' + uri);
       let result = Vue.http.get(uri);
       return result;
       // Vue.http.get(uri).then(response => {
