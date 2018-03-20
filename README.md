@@ -1,6 +1,6 @@
-# Dasher 
+# Dasher
 
-> A Dashboard framework built with Vue and D3. 
+> A Prototype Dashboard framework built with Vue.
 
 ## Build Setup
 
@@ -26,9 +26,4 @@ npm run e2e
 # run all tests
 npm test
 ```
-
-## Run produc
-
-
-
 

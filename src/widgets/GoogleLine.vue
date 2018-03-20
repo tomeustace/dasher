@@ -20,8 +20,6 @@ function updateChart(config, widgetId) {
       data.addColumn('string', 'Dimension');
       data.addColumn('number', 'Measure');
 
-      //var myuri = "http://localhost:8080/myapp/myresource/1/" + encodeURIComponent(JSON.stringify(globalChartQuery[idx]));
-      //iterate selectedOptions and add value as  
       //TODO FIX CONFIG ARRAY TO CLEAN UP BELOW
       if(!_.isUndefined(config.Keys)) {
         title = config.Title;

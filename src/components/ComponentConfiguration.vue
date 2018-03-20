@@ -2,7 +2,7 @@
     <div :id="_uid" class="component-configuration">
       <md-dialog-title>Configure {{name}}</md-dialog-title>
       <md-icon class="md-raised md-accent">settings_applications</md-icon>
-      <md-dialog-content> 
+      <md-dialog-content>
 
         <md-input-container class="save-configuration">
           <label for="title">Title</label>
@@ -24,7 +24,7 @@
           <!-- selection triggers computed property currently -->
           {{selection}}
 
-          <div v-if="selectedOptions[conf.name].length > 0 && conf.name != 'Title'"> 
+          <div v-if="selectedOptions[conf.name].length > 0 && conf.name != 'Title'">
             <md-subheader>Selected {{conf.name}}</md-subheader>
             <md-chips v-model="selectedOptions[conf.name]" md-static>
               <template scope="chip">{{ chip.value }}</template>
@@ -54,12 +54,9 @@
 </template>
 <script>
 
-/*eslint-disable */
-import DimensionConfiguration from './DimensionConfiguration';
-
-//parent is ComponentShell
+/*eslint-disable*/
 const vm = {
-  props: ['config','name','cid'],
+  props: ['config', 'name', 'cid'],
   data() {
     return {
       title: '',
@@ -67,33 +64,27 @@ const vm = {
     };
   },
   computed: {
-    selection: function() {
-      console.log('ComponentConfiguration: computed: selection ' + this.config);
-      let options = {};
-      _.each(this.config, function(it) {
-        console.log('selection ' + it.name);
+    selection() {
+      const options = {};
+      _.each(this.config, function (it) {
         options[it.name] = [];
       });
       options['Title'] = this.title;
       this.selectedOptions = options;
     },
   },
-  methods: { 
+  methods: {
     save(ref) {
-      //TODO fix viewName below 
-      let viewName = this.$parent.$parent.$parent.$parent.$el.id;
-      let cid = this.cid;
-      let conf = {};
+      const viewName = this.$parent.$parent.$parent.$parent.$el.id;
+      const cid = this.cid;
+      const conf = {};
       conf.default = this.config;
       conf.selected = this.selectedOptions;
-      this.$store.dispatch('updateWidgetConfig', {viewName, conf, cid}); 
-      //event to parent to close dialog
+      this.$store.dispatch('updateWidgetConfig', { viewName, conf, cid });
       this.$emit('closeDialog', ref);
     },
   },
-  components: { 
-    DimensionConfiguration
-  },
+  components: { },
 };
 
 /*eslint-disable */

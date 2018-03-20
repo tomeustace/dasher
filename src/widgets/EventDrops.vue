@@ -67,11 +67,11 @@ function updateTimeline(conf, widgetId) {
 
 const vm = {
   data() {
-    return { 
+    return {
       //get tables from store getter
       name: 'D3 Event Drops',
       widgetConfig: [
-      { type: 'select', name: 'Services', options:[{id:"Savings"}, {id:"Banking"}, {id:"Credit Card"}, {id:"Insurance"}, {id:"Loans"}, {id:"Planning"}] },
+      { type: 'select', name: 'Services', options:[{id:"Car"}, {id:"Home"}, {id:"Business"}, {id:"Life"}, {id:"Loans"}, {id:"Planning"}] },
       ],
     }
   },

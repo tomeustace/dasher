@@ -41,10 +41,10 @@ export const store = new Vuex.Store({
   getters: {
     getWidgetConfig: (state) => (viewName, cid) => {
       let index = _.findIndex(state.views, function(v) {
-        return v.name === viewName; 
+        return v.name === viewName;
       });
       let target = _.find(state.views[index].widgets, function(widget) {
-        return widget.cid === cid; 
+        return widget.cid === cid;
       });
       if(!_.isUndefined(target)) {
         return target.config;
@@ -58,78 +58,37 @@ export const store = new Vuex.Store({
         return;
       }
 
-      let table = 'table|' + conf.selected.Tables;
-      let attributes = conf.selected.Attributes;
-      let keys = conf.selected.Keys;
-      let attSet = [...attributes, ...keys];
-      let reqObj = {'table':table,'time':'','attSet':[attSet],'trend':0};
-      reqObj = JSON.stringify(reqObj);
-      reqObj = encodeURIComponent(reqObj);
-      let uri = 'http://localhost:8080/myapp/myresource/1/' + reqObj;
-      let result = Vue.http.get(uri);
-      return result;
-      // Vue.http.get(uri).then(response => {
-      //   let data = response.body;
-      //   console.log(data);
-      //   result.resolve(data);
-      // }, response => {
-      //   console.log('error retrieving data for ' + uri);
-      //   result.reject(data);
-      // });
+      //Vue.http.get(uri).then(response => {
+      //  let data = response.body;
+      //  result.resolve(data);
+      //}, response => {
+      //  result.reject(data);
+      //});
     },
     getTables: (state) => () => {
       return state.loadedTables;
     },
     getKeys: (state) => () => {
       let keys = [
-        "USER|agentName0",
-        "USER|agentName1",
-        "USER|agentName2",
-        "USER|agentName3",
-        "USER|agentName4",
-        "USER|agentName5",
+        "A",
+        "B",
+        "C",
+        "D",
       ];
       keys = _.map(keys, function(key) {
-          return {"id": key}; 
+          return {"id": key};
         });
       return keys;
     },
     getAttributes: (state) => () => {
        let attributes = [
-            "att|ALL",
-            "service|Credit Card",
-            "service|Home Equity",
-            "service|savings",
-            "service|Auto Loans",
-            "service|Checking",
-            "service|Mortgage",
-            "service|Business Banking",
-            "service|Merchant Services",
-            "service|Business Credit Card",
-            "service|Business Lending",
-            "region|New England",
-            "region|Mid-Atlantic",
-            "region|NorthEast",
-            "region|West North Central",
-            "region|South Atlantic",
-            "region|East South Central",
-            "region|West South Central",
-            "region|Mountain",
-            "region|Pacific",
-            "profile|Platinum",
-            "profile|Gold",
-            "profile|Silver",
-            "profile|Bronze",
-            "profile|Unknown",
-            "lang|English",
-            "lang|Spanish",
-            "channel|sipuri",
-            "channel|Chat",
-            "channel|Email",
-            "channel|Mobile Video"
+            "A",
+            "B",
+            "C",
+            "D",
         ];
         attributes = _.map(attributes, function(att) {
-          return {"id":att}; 
+          return {"id":att};
         });
         return attributes;
     },
@@ -137,7 +96,7 @@ export const store = new Vuex.Store({
   actions: {
     addView ({ commit, state }, viewName) {
       console.log(`actions: addView() - ${viewName}`);
-      let added = addNewView(viewName); 
+      let added = addNewView(viewName);
       if(added.saved === true) {
         commit('addView', viewName)
       } else {
@@ -154,53 +113,43 @@ export const store = new Vuex.Store({
           //load view widgets
           _.each(view.widgets, function(widget) {
             let index = _.findIndex(state.views, function(v) {
-              return v.name === view.name; 
+              return v.name === view.name;
             });
             console.log(`action: loadViews() - widget ${widget.name} cid ${widget.cid}`);
             commit('addWidgetToView', {index: index, widget: {name: widget.name, cid: widget.cid}})
             //load widget config
             _.each(widget.config, function(config) {
               let widgetIndex = _.findIndex(state.views[index].widgets, function(v) {
-                return v.cid === widget.cid; 
+                return v.cid === widget.cid;
               });
               console.log(`action: loadViews() - config ${widget.name} cid ${widget.cid} config ${config}`);
               commit('addConfigToWidget', {index, widget: {name: widget.name, widgetIndex, cid: widget.cid, config}})
             });
           });
         });
-      } 
+      }
     },
     loadTables ({ commit, state }) {
-      Vue.http.get('http://localhost:8080/myapp/myresource/1/TableNames').then(response => {
-        let tables = response.body.split(',');
-        tables = tables.map( (table) => { 
-          return { id: table };
-        });
-        console.log('loading tables');
-        commit('loadTables', tables);
-      }, response => {
-        console.log('error loading tables');
-      });
     },
     addWidgetToView ({ commit, state }, view ) {
       let viewName = view.name;
       let widgetName = view.widget;
       let cid = Math.random().toString(36).substr(2, 9);
-      addWidgetToView(viewName, {name: widgetName, cid: cid}); 
+      addWidgetToView(viewName, {name: widgetName, cid: cid});
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
-        return view.name === viewName; 
+        return view.name === viewName;
       });
       commit('addWidgetToView', {index: index, widget: {name: widgetName, cid: cid}})
     },
     removeView ({ commit, state }, view ) {
       let viewName = view.name;
       let widgetName = view.widget;
-      removeView(viewName); 
+      removeView(viewName);
 
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
-        return view.name === viewName; 
+        return view.name === viewName;
       });
       commit('removeView', {index, viewName})
 
@@ -208,21 +157,21 @@ export const store = new Vuex.Store({
     removeWidgetFromView ({ commit, state }, view ) {
       let viewName = view.name;
       let widgetName = view.widget;
-      removeWidgetFromView(viewName, {cid: view.cid, name: widgetName}); 
+      removeWidgetFromView(viewName, {cid: view.cid, name: widgetName});
 
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
-        return view.name === viewName; 
+        return view.name === viewName;
       });
       commit('removeWidgetFromView', {index: index, viewName: viewName, widget: {cid: view.cid}})
     },
     removeWidgetsFromView ({ commit, state }, view ) {
       let viewName = view.name;
-      removeWidgetsFromView(viewName); 
+      removeWidgetsFromView(viewName);
 
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
-        return view.name === viewName; 
+        return view.name === viewName;
       });
       commit('removeWidgetsFromView', {index: index, viewName: viewName})
     },
@@ -230,10 +179,10 @@ export const store = new Vuex.Store({
       let viewName = options.viewName;
       let cid = options.cid;
       let conf = options.conf;
-      updateWidgetConfig(viewName, options); 
+      updateWidgetConfig(viewName, options);
       //need to find index of view by name
       let index = _.findIndex(state.views, function(view) {
-        return view.name === viewName; 
+        return view.name === viewName;
       });
       commit('updateWidgetConfig', {index, viewName, conf, cid})
     },
@@ -277,7 +226,7 @@ export const store = new Vuex.Store({
       let widgetsTarget = state.views[view.index].widgets;
       _.remove(widgetsTarget, function(c) {
         //TODO change to be id
-        return c.cid === view.widget.cid; 
+        return c.cid === view.widget.cid;
       });
 
       //add updated view
@@ -294,7 +243,7 @@ export const store = new Vuex.Store({
       let widgetsTarget = state.views[options.index].widgets;
       let index = _.findIndex(widgetsTarget, function(c) {
         //TODO change to be id
-        return c.cid === options.cid; 
+        return c.cid === options.cid;
       });
 
       //add updated view
@@ -319,7 +268,6 @@ export const store = new Vuex.Store({
 
 export const bus = new Vue();
 
-//export default bus;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

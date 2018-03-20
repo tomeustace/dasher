@@ -33,7 +33,7 @@ function updateChart(config, measure, widgetId) {
         _.each(config.selected.Attributes, function(option) {
           data.addRow([option, measure]);
         });
-      } 
+      }
 
       var options = { title, width: 380, height: 300, chartArea: { width: "70%", height: "70%" } };
       let selector = `[widget-cid="${widgetId}"]`;
@@ -70,11 +70,10 @@ function createChart(widgetId) {
 
 const vm = {
   data() {
-    return { 
+    return {
       //get tables from store getter
       name: 'Google Bar Chart',
       widgetConfig: [
-        { type: 'select', name: 'Tables', options: this.$store.getters.getTables() },
         { type: 'select', name: 'Attributes', options: this.$store.getters.getAttributes() },
         { type: 'select', name: 'Keys', options: this.$store.getters.getKeys() },
       ],
@@ -108,7 +107,7 @@ const vm = {
         setInterval(function() {
 
           let prom = that.$store.getters.updateTableData(conf);
-          if(!_.isUndefined(prom)) { 
+          if(!_.isUndefined(prom)) {
             prom.then( response => {
                 let data = response.body;
                 console.log(data);
@@ -118,7 +117,7 @@ const vm = {
               }
             );
           }
-        
+
         }, 3000);
       }
     },
